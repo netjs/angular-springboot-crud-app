@@ -1,0 +1,101 @@
+<!-- For displaying all users in a tables-->
+<div class="row" *ngIf="deleteMsg !== ''">  
+  <div class="alert alert-info alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{deleteMsg}}
+  </div>
+</div>
+<div class="row">
+    <h2>User Details</h2>
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>User Type</th>
+                <th>Start Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let user of users">
+                <td>{{user.userId}}</td>
+                <td>{{user.firstName}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.userType}}</td>
+                <td>{{user.startDate | date:'dd/MM/yyyy'}}</td>
+                <td>
+                    <button class="btn btn-success btn-sm" (click)="onClickUpdate(user.userId)" 
+                        data-toggle="modal" data-target="#updateModal">Update</button>
+                    <button class="btn btn-danger btn-sm ml-3" (click)="onClickDelete(user.userId)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- To show a modal box to update a record-->
+<div class="modal" id="updateModal" data-backdrop="static" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Update User</h5>
+          <button type="button" class="close" #closebutton data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form class="form-sm" [formGroup]="userUpdateForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body">    
+          <div class="form-group">
+            <label for="id">User ID</label>
+            <input type="text" class="form-control" id="id"
+              formControlName="id">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName"
+              formControlName="firstName">       
+            <div class="alert alert-danger" *ngIf="userUpdateForm.get('firstName').invalid 
+              && userUpdateForm.get('firstName').touched">
+              <div *ngIf="userUpdateForm.get('firstName').errors.required">
+                First Name is required.
+              </div>
+              <div *ngIf="userUpdateForm.get('firstName').errors.minlength">
+                First Name must be at least 5 characters long.
+              </div>
+            </div>                      
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName"
+              formControlName="lastName">       
+            <div class="alert alert-danger" *ngIf="userUpdateForm.get('lastName').invalid 
+              && userUpdateForm.get('lastName').touched">
+              <div *ngIf="userUpdateForm.get('lastName').errors.required">
+                Last Name is required.
+              </div>
+              <div *ngIf="userUpdateForm.get('lastName').errors.minlength">
+                Last Name must be at least 3 characters long.
+              </div>
+            </div>                      
+          </div>
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" class="form-control" id="startDate"
+            formControlName="startDate">                        
+          </div>
+          <div class="form-group">
+            <label for="userType">User Type</label>
+            <select class="form-control" id="userType"                    
+            formControlName="userType">
+              <option *ngFor="let type of userTypes" [value]="type">{{type}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
